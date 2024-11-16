@@ -6,6 +6,7 @@ import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
 
 import { icons, images } from "@/constants";
+import OAuth from "@/components/OAuth";
 
 const SignUp = () => {
   const [form, setForm] = useState({
@@ -53,13 +54,15 @@ const SignUp = () => {
             onPress={onSignUpPress}
             className="mt-6"
           />
-          {/*OAuth*/}
+          <OAuth />
           <Link
             href="/sign-in"
             className="text-lg text-center text-general-200 mt-10"
           >
-            Already have an account?{" "}
-            <Text className="text-primary-500">Log In</Text>
+            <Text>
+              Already have an account?{" "}
+              <Text className="text-primary-500">Sign in</Text>
+            </Text>
           </Link>
         </View>
         {/*Verification model*/}
