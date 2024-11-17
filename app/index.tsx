@@ -5,7 +5,6 @@ const Page = () => {
   const { isSignedIn } = useAuth();
 
   if (isSignedIn) {
-    // @ts-ignore
     return <Redirect href="/(root)/(tabs)/home" />;
   }
 
