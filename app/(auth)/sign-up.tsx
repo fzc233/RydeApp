@@ -1,13 +1,6 @@
 import { Link, router } from "expo-router";
 import { useState } from "react";
-import {
-  Image,
-  ScrollView,
-  Text,
-  View,
-  NativeModule,
-  Alert,
-} from "react-native";
+import { Image, ScrollView, Text, View, Alert } from "react-native";
 
 import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
@@ -30,8 +23,14 @@ const SignUp = () => {
     error: "",
     code: "",
   });
+
   const onSignUpPress = async () => {
     if (!isLoaded) {
+      return;
+    }
+
+    if (!form.name || !form.email || !form.password) {
+      Alert.alert("Error", "Please fill in all fields.");
       return;
     }
 
@@ -48,9 +47,9 @@ const SignUp = () => {
         state: "pending",
       });
     } catch (err: any) {
-      // console.error(JSON.stringify(err, null, 2));
-      //以弹窗的形式报错
-      Alert.alert("Error", err.errors[0].longMessage);
+      const errorMessage =
+        err?.errors?.[0]?.longMessage || "An unknown error occurred.";
+      Alert.alert("Error", errorMessage);
     }
   };
 
@@ -63,10 +62,8 @@ const SignUp = () => {
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code: verification.code,
       });
-      console.log("Verification Status: ", completeSignUp.status);
 
       if (completeSignUp.status === "complete") {
-        //Todo:Create a database user
         await setActive({ session: completeSignUp.createdSessionId });
         setVerification({
           ...verification,
@@ -75,18 +72,29 @@ const SignUp = () => {
       } else {
         setVerification({
           ...verification,
-          error: "verification failed",
+          error: "Verification failed",
           state: "failed",
         });
       }
     } catch (err: any) {
+      const errorMessage =
+        err?.errors?.[0]?.longMessage ||
+        "Verification failed. Please try again.";
       setVerification({
         ...verification,
-        error: err.error[0].longMessage,
+        error: errorMessage,
         state: "failed",
       });
     }
   };
+
+  if (!isLoaded) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView className="flex-1 bg-white">
@@ -138,14 +146,13 @@ const SignUp = () => {
         </View>
         <ReactNativeModal
           isVisible={verification.state === "pending"}
-          // onBackdropPress={() =>
-          //   setVerification({ ...verification, state: "default" })
-          // }
+          onBackdropPress={() =>
+            setVerification({ ...verification, state: "default" })
+          }
           onModalHide={() => {
             if (verification.state === "success") {
               setTimeout(() => setShowSuccessModal(true), 10);
             }
-            console.log("Verification State on Hide: ", verification.state);
           }}
         >
           <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
@@ -193,7 +200,7 @@ const SignUp = () => {
               title="Browse Home"
               onPress={() => {
                 setShowSuccessModal(false);
-                router.push(`/(root)/(tabs)/home`);
+                router.push("/(root)/(tabs)/home");
               }}
               className="mt-5"
             />
