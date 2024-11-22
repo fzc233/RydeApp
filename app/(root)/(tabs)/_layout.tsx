@@ -12,15 +12,26 @@ const TabIcon = ({
 }) => (
   <View
     className={`flex flex-row justify-center items-center rounded-full ${focused ? "bg-general-300" : ""}`}
+    style={{
+      width: 60,
+      height: 60,
+      overflow: "hidden", // 防止溢出
+    }}
   >
     <View
       className={`rounded-full w-12 h-12 items-center justify-center ${focused ? "bg-general-400" : ""}`}
+      style={{
+        width: 60,
+        height: 60,
+      }}
     >
       <Image
         source={source}
-        tintColor="white"
         resizeMode="contain"
-        className="w-7 h-7"
+        style={{
+          width: 28,
+          height: 28,
+        }}
       />
     </View>
   </View>
@@ -37,10 +48,10 @@ export default function Layout() {
         tabBarStyle: {
           backgroundColor: "#333333",
           borderRadius: 50,
-          paddingBottom: 0, // ios only
+          paddingBottom: 25, // ios only 按钮位置
           overflow: "hidden",
           marginHorizontal: 20,
-          marginBottom: 20,
+          marginBottom: 25,
           height: 78,
           display: "flex",
           justifyContent: "space-between",
