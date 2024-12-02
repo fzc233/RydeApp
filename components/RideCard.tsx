@@ -72,7 +72,7 @@ const RideCard = ({
             Payment
           </Text>
           <Text
-            className={`text-md font-JakartaMedium text-gray-500 ${payment_status === "paid" ? "text-green-500" : "text-red-500"}`}
+            className={`text-md capitalize font-JakartaMedium text-gray-500 ${payment_status === "paid" ? "text-green-500" : "text-red-500"}`}
           >
             {payment_status}
           </Text>
