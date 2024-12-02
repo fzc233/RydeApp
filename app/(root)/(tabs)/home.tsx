@@ -1,7 +1,8 @@
-import { FlatList, Text, View } from "react-native";
+import { FlatList, Text, View, Image, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import RideCard from "@/components/RideCard";
 import { useUser } from "@clerk/shared/react";
+import { images } from "@/constants";
 const RecentRide = [
   {
     ride_id: "1",
@@ -110,12 +111,40 @@ const RecentRide = [
 ];
 export default function Page() {
   const { user } = useUser();
-
+  const loading = false;
   return (
     <SafeAreaView className="bg-general-500">
       <FlatList
         data={RecentRide.slice(0, 5)}
+        // data={[]}
         renderItem={({ item }) => <RideCard ride={item} />}
+        className="px-5"
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ paddingBottom: 100 }}
+        ListEmptyComponent={() => (
+          <View className="flex flex-col items-center justify-center">
+            {!loading ? (
+              <>
+                <Image
+                  source={images.noResult}
+                  className="w-40 h-40"
+                  alt="No recent rides found"
+                  resizeMode="contain"
+                />
+                <Text className="text-mm">No recent rides found</Text>
+              </>
+            ) : (
+              <ActivityIndicator size="small" color="#000" />
+            )}
+          </View>
+        )}
+        ListHeaderComponent={() => (
+          <>
+            <View className="flex flex-row items-center justify-between my-5">
+              <Text>Welcome {user?.firstName} 😀👋</Text>
+            </View>
+          </>
+        )}
       />
     </SafeAreaView>
   );
