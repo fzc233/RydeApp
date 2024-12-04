@@ -11,6 +11,7 @@ import RideCard from "@/components/RideCard";
 import { useUser } from "@clerk/shared/react";
 import { icons, images } from "@/constants";
 import GoogleTextInput from "@/components/GoogleTextInput";
+import Map from "@/components/Map";
 const RecentRide = [
   {
     ride_id: "1",
@@ -155,7 +156,7 @@ export default function Page() {
                 Welcome{", "}
                 {user?.firstName ||
                   user?.emailAddresses[0].emailAddress.split("@")[0]}{" "}
-                😀👋
+                👋
                 <TouchableOpacity
                   onPress={handleSighOut}
                   className="justify-center items-center w-10 h-10 rounded-full bg-white"
@@ -174,8 +175,13 @@ export default function Page() {
               <Text className="text-xl font-JakartaBold mt-5 mb-3">
                 Your Current Location
               </Text>
-              <View className="flex flex-row items-center bg-transparent h-[300px]"></View>
+              <View className="flex flex-row items-center bg-transparent h-[300px]">
+                <Map />
+              </View>
             </>
+            <Text className="text-xl font-JakartaBold mt-5 mb-3">
+              Recent Rides
+            </Text>
           </>
         )}
       />
