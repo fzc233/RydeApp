@@ -6,12 +6,15 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
+import * as Location from "expo-location";
 import { SafeAreaView } from "react-native-safe-area-context";
 import RideCard from "@/components/RideCard";
 import { useUser } from "@clerk/shared/react";
 import { icons, images } from "@/constants";
 import GoogleTextInput from "@/components/GoogleTextInput";
 import Map from "@/components/Map";
+import { useLocationStore } from "@/store";
+import { useEffect, useState } from "react";
 const RecentRide = [
   {
     ride_id: "1",
@@ -119,10 +122,33 @@ const RecentRide = [
   },
 ];
 export default function Page() {
+  const { setUserLocation, setDestinationLocation } = useLocationStore();
   const { user } = useUser();
   const loading = false;
+  const [hasPermission, setHasPermissions] = useState(false);
   const handleSighOut = () => {};
   const handleDestinationPress = () => {};
+  useEffect(() => {
+    const requestLocation = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setHasPermissions(false);
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync();
+      const address = await Location.reverseGeocodeAsync({
+        latitude: location.coords?.latitude!,
+        longitude: location.coords?.longitude!,
+      });
+      setUserLocation({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        address: `${address[0].name},${address[0].region}`,
+      });
+    };
+    requestLocation();
+  }, []);
   return (
     <SafeAreaView className="bg-general-500">
       <FlatList
@@ -152,7 +178,7 @@ export default function Page() {
         ListHeaderComponent={() => (
           <>
             <View className="flex flex-row items-center justify-between my-5">
-              <Text className="text-2xl font-JakartaBold capitalize">
+              <Text className="text-xl font-JakartaBold capitalize">
                 Welcome{", "}
                 {user?.firstName ||
                   user?.emailAddresses[0].emailAddress.split("@")[0]}{" "}
