@@ -128,6 +128,7 @@ export default function Page() {
   const [hasPermission, setHasPermissions] = useState(false);
   const handleSighOut = () => {};
   const handleDestinationPress = () => {};
+
   useEffect(() => {
     const requestLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
