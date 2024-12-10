@@ -128,6 +128,7 @@ export default function Page() {
   const [hasPermission, setHasPermissions] = useState(false);
   const handleSighOut = () => {};
   const handleDestinationPress = () => {};
+
   useEffect(() => {
     const requestLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -185,13 +186,13 @@ export default function Page() {
                 {user?.firstName ||
                   user?.emailAddresses[0].emailAddress.split("@")[0]}{" "}
                 👋
-                <TouchableOpacity
-                  onPress={handleSighOut}
-                  className="justify-center items-center w-10 h-10 rounded-full bg-white"
-                >
-                  <Image source={icons.out} className="w-4 h-4" />
-                </TouchableOpacity>
               </Text>
+              <TouchableOpacity
+                onPress={handleSighOut}
+                className="justify-center items-center w-10 h-10 rounded-full bg-white"
+              >
+                <Image source={icons.out} className="w-4 h-4" />
+              </TouchableOpacity>
             </View>
             {/*  Goole Text Input*/}
             <GoogleTextInput
@@ -208,7 +209,7 @@ export default function Page() {
               </View>
             </>
             <Text className="text-xl font-JakartaBold mt-5 mb-3">
-              Recent Rides
+              Recent Cars
             </Text>
           </>
         )}
