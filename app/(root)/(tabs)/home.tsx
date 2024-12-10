@@ -186,13 +186,13 @@ export default function Page() {
                 {user?.firstName ||
                   user?.emailAddresses[0].emailAddress.split("@")[0]}{" "}
                 👋
-                <TouchableOpacity
-                  onPress={handleSighOut}
-                  className="justify-center items-center w-10 h-10 rounded-full bg-white"
-                >
-                  <Image source={icons.out} className="w-4 h-4" />
-                </TouchableOpacity>
               </Text>
+              <TouchableOpacity
+                onPress={handleSighOut}
+                className="justify-center items-center w-10 h-10 rounded-full bg-white"
+              >
+                <Image source={icons.out} className="w-4 h-4" />
+              </TouchableOpacity>
             </View>
             {/*  Goole Text Input*/}
             <GoogleTextInput
