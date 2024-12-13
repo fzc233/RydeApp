@@ -1,5 +1,6 @@
 import { View, Text } from "react-native";
 import { useLocationStore } from "@/store";
+import RideLayout from "@/components/RideLayout";
 
 const findRide = () => {
   const {
@@ -10,10 +11,9 @@ const findRide = () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
   } = useLocationStore();
   return (
-    <View>
-      <Text className="text-2xl">You are here: {userAddress}</Text>
-      <Text className="text-2xl">You are going to: {destinationAddress} </Text>
-    </View>
+    <RideLayout>
+      <Text className="text-2xl">Find Ride</Text>
+    </RideLayout>
   );
 };
 export default findRide;
