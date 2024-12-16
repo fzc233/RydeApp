@@ -57,7 +57,7 @@ const BookRide = () => {
           <View className="flex flex-row items-center justify-between w-full border-b border-white py-3">
             <Text className="text-lg font-JakartaRegular">Pickup Time</Text>
             <Text className="text-lg font-JakartaRegular">
-              {formatTime(driverDetails?.time!)}
+              {formatTime(driverDetails?.time || 5!)}
             </Text>
           </View>
 
@@ -84,6 +84,7 @@ const BookRide = () => {
             </Text>
           </View>
         </View>
+        <Payment />
       </>
     </RideLayout>
   );
