@@ -48,25 +48,14 @@ const RideLayout = ({
           snapPoints={snapPoints || ["40%", "85%"]}
           index={0}
         >
-          {title === "Choose a Rider" ? (
-            <BottomSheetView
-              style={{
-                flex: 1,
-                padding: 20,
-              }}
-            >
-              {children}
-            </BottomSheetView>
-          ) : (
-            <BottomSheetScrollView
-              style={{
-                flex: 1,
-                padding: 20,
-              }}
-            >
-              {children}
-            </BottomSheetScrollView>
-          )}
+          <BottomSheetView
+            style={{
+              flex: 1,
+              padding: 20,
+            }}
+          >
+            {children}
+          </BottomSheetView>
         </BottomSheet>
       </View>
     </GestureHandlerRootView>

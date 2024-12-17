@@ -21,6 +21,7 @@
     "@gorhom/bottom-sheet": "^5.0.6",
     "@neondatabase/serverless": "^0.10.3",
     "@react-navigation/native": "^6.0.2",
+    "@stripe/stripe-react-native": "^0.40.0",
     "expo": "^52.0.7",
     "expo-constants": "~17.0.3",
     "expo-font": "~13.0.1",
@@ -49,6 +50,7 @@
     "react-native-swiper": "^1.6.0",
     "react-native-uuid": "^2.0.3",
     "react-native-web": "~0.19.13",
+    "stripe": "^17.4.0",
     "tailwindcss-react-native": "^1.7.10",
     "uuid": "^3.4.0",
     "zustand": "^5.0.2"
