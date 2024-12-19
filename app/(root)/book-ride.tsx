@@ -7,6 +7,7 @@ import { formatTime } from "@/lib/utils";
 import { useDriverStore, useLocationStore } from "@/store";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import Payment from "@/components/Payment";
+import { useEffect, useState } from "react";
 
 const BookRide = () => {
   const [publishableKey, setPublishableKey] = useState("");
