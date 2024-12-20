@@ -31,9 +31,9 @@ const BookRide = () => {
 
   return (
     <StripeProvider
-      publishableKey={publishableKey}
-      merchantIdentifier="merchant.identifier" // required for Apple Pay
-      urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
+      publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY!}
+      merchantIdentifier="merchant.uber.com" // required for Apple Pay
+      urlScheme="myapp" // required for 3D Secure and bank redirects
     >
       <RideLayout title="Book Ride">
         <>
