@@ -6,11 +6,12 @@ import { ReactNativeModal } from "react-native-modal";
 
 import CustomButton from "@/components/CustomButton";
 import { images } from "@/constants";
+import { useAuth } from "@clerk/clerk-expo";
 
 const Payment = () => {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [success, setSuccess] = useState<boolean>(false);
-
+  const { userId } = useAuth();
   const initializePaymentSheet = async () => {
     const { error } = await initPaymentSheet({
       merchantDisplayName: "Example, Inc.",
