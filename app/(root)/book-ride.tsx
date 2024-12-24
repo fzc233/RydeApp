@@ -104,6 +104,7 @@ const BookRide = () => {
             </View>
           </View>
           <Payment />
+          <button className="flex-col" />
         </>
       </RideLayout>
     </StripeProvider>
