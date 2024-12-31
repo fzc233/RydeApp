@@ -2,8 +2,10 @@ import MapView, { Marker, PROVIDER_DEFAULT } from "react-native-maps";
 import { useDriverStore, useLocationStore } from "@/store";
 import { useEffect, useState } from "react";
 import { calculateRegion, generateMarkersFromData } from "@/lib/Map";
-import { MarkerData } from "@/types/type";
+import { Driver, MarkerData } from "@/types/type";
 import { icons } from "@/constants";
+import { useFetch } from "@/lib/fetch";
+import { ActivityIndicator, View } from "react-native";
 const drivers = [
   {
     id: "1",
@@ -51,6 +53,7 @@ const drivers = [
   },
 ];
 const Map = () => {
+  const { data: drivers, loading, error } = useFetch<Driver[]>("/(api)/driver");
   const {
     userLongitude,
     userLatitude,
@@ -80,7 +83,15 @@ const Map = () => {
 
       setMarkers(newMarkers);
     }
-  }, [drivers, userLatitude, userLongitude]);
+  }, [drivers]);
+  if (loading || !userLatitude || !userLongitude) {
+    return (
+      <View>
+        <ActivityIndicator size="small" color="#000" />
+      </View>
+    );
+  }
+
   return (
     <MapView
       provider={PROVIDER_DEFAULT}
