@@ -3,7 +3,7 @@ import { ActivityIndicator, Text, View } from "react-native";
 import MapView, { Marker, PROVIDER_DEFAULT } from "react-native-maps";
 import { icons } from "@/constants";
 import { useFetch } from "@/lib/fetch";
-
+import MapViewDirections from "react-native-maps-directions";
 import { useDriverStore, useLocationStore } from "@/store";
 import { Driver, MarkerData } from "@/types/type";
 import {
@@ -12,6 +12,7 @@ import {
   generateMarkersFromData,
 } from "@/lib/Map";
 
+const directionsAPI = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
 const Map = () => {
   const {
     userLongitude,
@@ -85,7 +86,7 @@ const Map = () => {
       mapType="mutedStandard"
       showsPointsOfInterest={false}
       initialRegion={region}
-      showsUserLocation={true}
+      //showsUserLocation={true}
       userInterfaceStyle="light"
     >
       {markers.map((marker, index) => (
@@ -101,6 +102,30 @@ const Map = () => {
           }
         />
       ))}
+      {destinationLongitude && destinationLatitude && (
+        <>
+          <Marker
+            coordinate={{
+              latitude: destinationLatitude,
+              longitude: destinationLongitude,
+            }}
+            key="destionation"
+            title="Destination"
+            image={icons.pin}
+          />
+
+          <MapViewDirections
+            origin={{ latitude: userLatitude!, longitude: userLongitude! }}
+            destination={{
+              latitude: destinationLatitude,
+              longitude: destinationLongitude,
+            }}
+            apikey={process.env.EXPO_PUBLIC_GOOGLE_API_KEY}
+            strokeColor="#0286ff"
+            strokeWidth={2}
+          />
+        </>
+      )}
     </MapView>
   );
 };
