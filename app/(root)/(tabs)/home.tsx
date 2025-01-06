@@ -16,6 +16,8 @@ import Map from "@/components/Map";
 import { useLocationStore } from "@/store";
 import { useEffect, useState } from "react";
 import { router } from "expo-router";
+import { useFetch } from "@/lib/fetch";
+import { useAuth } from "@clerk/clerk-expo";
 const RecentRide = [
   {
     ride_id: "1",
@@ -125,9 +127,13 @@ const RecentRide = [
 export default function Page() {
   const { setUserLocation, setDestinationLocation } = useLocationStore();
   const { user } = useUser();
-  const loading = false;
+  const { data: recentRides, loading } = useFetch(`/(api)/ride/${user?.id}`);
+  const { signOut } = useAuth();
   const [hasPermission, setHasPermissions] = useState(false);
-  const handleSighOut = () => {};
+  const handleSighOut = () => {
+    signOut();
+    router.replace("//(auth)/sign-in)");
+  };
   const handleDestinationPress = (location: {
     latitude: number;
     longitude: number;

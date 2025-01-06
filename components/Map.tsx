@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import MapView, { Marker, PROVIDER_DEFAULT } from "react-native-maps";
+import MapViewDirections from "react-native-maps-directions";
+
 import { icons } from "@/constants";
 import { useFetch } from "@/lib/fetch";
-import MapViewDirections from "react-native-maps-directions";
-import { useDriverStore, useLocationStore } from "@/store";
-import { Driver, MarkerData } from "@/types/type";
 import {
   calculateDriverTimes,
   calculateRegion,
   generateMarkersFromData,
-} from "@/lib/Map";
+} from "@/lib/map";
+import { useDriverStore, useLocationStore } from "@/store";
+import { Driver, MarkerData } from "@/types/type";
 
-const directionsAPI = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
+const directionsAPI = process.env.EXPO_PUBLIC_DIRECTIONS_API_KEY;
+
 const Map = () => {
   const {
     userLongitude,
@@ -86,7 +88,7 @@ const Map = () => {
       mapType="mutedStandard"
       showsPointsOfInterest={false}
       initialRegion={region}
-      //showsUserLocation={true}
+      showsUserLocation={true}
       userInterfaceStyle="light"
     >
       {markers.map((marker, index) => (
@@ -102,26 +104,29 @@ const Map = () => {
           }
         />
       ))}
-      {destinationLongitude && destinationLatitude && (
+
+      {destinationLatitude && destinationLongitude && (
         <>
           <Marker
+            key="destination"
             coordinate={{
               latitude: destinationLatitude,
               longitude: destinationLongitude,
             }}
-            key="destionation"
             title="Destination"
             image={icons.pin}
           />
-
           <MapViewDirections
-            origin={{ latitude: userLatitude!, longitude: userLongitude! }}
+            origin={{
+              latitude: userLatitude!,
+              longitude: userLongitude!,
+            }}
             destination={{
               latitude: destinationLatitude,
               longitude: destinationLongitude,
             }}
-            apikey={process.env.EXPO_PUBLIC_GOOGLE_API_KEY}
-            strokeColor="#0286ff"
+            apikey={directionsAPI!}
+            strokeColor="#0286FF"
             strokeWidth={2}
           />
         </>
