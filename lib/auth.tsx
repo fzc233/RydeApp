@@ -1,9 +1,5 @@
 import * as SecureStore from "expo-secure-store";
-// export interface TokenCache {
-//   getToken: (key: string) => Promise<string | undefined | null>;
-//   saveToken: (key: string, token: string) => Promise<void>;
-//   clearToken?: (key: string) => void;
-// }
+import * as Linking from "expo-linking";
 export const tokenCache = {
   async getToken(key: string) {
     try {
