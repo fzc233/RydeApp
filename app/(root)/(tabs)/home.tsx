@@ -132,7 +132,7 @@ export default function Page() {
   const [hasPermission, setHasPermissions] = useState(false);
   const handleSighOut = () => {
     signOut();
-    router.replace("//(auth)/sign-ina'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a)");
+    router.replace("//(auth)/sign-in)");
   };
   const handleDestinationPress = (location: {
     latitude: number;
