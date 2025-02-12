@@ -46,39 +46,53 @@ const SignUp = () => {
   };
   const onPressVerify = async () => {
     if (!isLoaded) return;
+
     try {
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code: verification.code,
       });
+
       if (completeSignUp.status === "complete") {
-        await fetchAPI("/(api)/user", {
-          method: "POST",
-          body: JSON.stringify({
-            name: form.name,
-            email: form.email,
-            clerkId: completeSignUp.createdUserId,
-          }),
-        });
+        try {
+          await fetchAPI("/(api)/user", {
+            method: "POST",
+            body: JSON.stringify({
+              name: form.name,
+              email: form.email,
+              clerkId: completeSignUp.createdUserId,
+            }),
+          });
+        } catch (apiError) {
+          console.error("Error saving user data:", apiError);
+          setVerification((prev) => ({
+            ...prev,
+            error: "Failed to save user data. Please try again later.",
+            state: "failed",
+          }));
+          return;
+        }
+
         await setActive({ session: completeSignUp.createdSessionId });
-        setVerification({
-          ...verification,
+
+        setVerification((prev) => ({
+          ...prev,
           state: "success",
-        });
+        }));
       } else {
-        setVerification({
-          ...verification,
+        setVerification((prev) => ({
+          ...prev,
           error: "Verification failed. Please try again.",
           state: "failed",
-        });
+        }));
       }
     } catch (err: any) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      setVerification({
-        ...verification,
-        error: err.errors[0].longMessage,
+      console.error("Verification error:", err);
+
+      setVerification((prev) => ({
+        ...prev,
+        error: err.errors?.[0]?.longMessage || "Something went wrong. Please try again.",
         state: "failed",
-      });
+      }));
     }
   };
   return (
