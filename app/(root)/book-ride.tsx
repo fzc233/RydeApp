@@ -6,7 +6,7 @@ import { icons } from "@/constants";
 import { formatTime } from "@/lib/utils";
 import { useDriverStore, useLocationStore } from "@/store";
 import { StripeProvider } from "@stripe/stripe-react-native";
-import Payment from "@/components/Payment";
+import Payment from "@/screens/Payment";
 import { useEffect, useState } from "react";
 
 const BookRide = () => {
