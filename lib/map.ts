@@ -1,6 +1,6 @@
 import { Driver, MarkerData } from "@/types/type";
 
-const directionsAPI = process.env.EXPO_PUBLIC_DIRECTIONS_API_KEY;
+const directionsAPI = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
 
 export const generateMarkersFromData = ({
   data,
@@ -131,6 +131,8 @@ export const calculateDriverTimes = async ({
         `https://maps.googleapis.com/maps/api/directions/json?origin=${userLatitude},${userLongitude}&destination=${destinationLatitude},${destinationLongitude}&key=${directionsAPI}`,
       );
       const dataToDestination = await responseToDestination.json();
+      console.log("dataToUser:", dataToUser);
+      console.log("dataToDestination:", dataToDestination);
 
       // ✅ 再检查 API 响应是否正确
       if (!dataToDestination.routes || dataToDestination.routes.length === 0) {

@@ -12,12 +12,12 @@ import { useLocationStore } from "@/store";
 import { PaymentProps } from "@/types/type";
 
 const Payment = ({
-                   fullName,
-                   email,
-                   amount,
-                   driverId,
-                   rideTime,
-                 }: PaymentProps) => {
+  fullName,
+  email,
+  amount,
+  driverId,
+  rideTime,
+}: PaymentProps) => {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const {
     userAddress,
@@ -121,6 +121,7 @@ const Payment = ({
       // setLoading(true);
     }
   };
+  console.log("Payment amount:", amount);
 
   return (
     <>

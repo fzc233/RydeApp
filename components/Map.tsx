@@ -13,7 +13,7 @@ import {
 import { useDriverStore, useLocationStore } from "@/store";
 import { Driver, MarkerData } from "@/types/type";
 
-const directionsAPI = process.env.EXPO_PUBLIC_DIRECTIONS_API_KEY;
+const directionsAPI = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
 
 const Map = () => {
   const {
@@ -54,7 +54,13 @@ const Map = () => {
         destinationLatitude,
         destinationLongitude,
       }).then((drivers) => {
-        setDrivers(drivers as MarkerData[]);
+        if (drivers) {
+          const formattedDrivers = drivers.map((driver) => ({
+            ...driver,
+            time: driver.time ? Math.round(driver.time) : 0, // 取整
+          }));
+          setDrivers(formattedDrivers as MarkerData[]);
+        }
       });
     }
   }, [markers, destinationLatitude, destinationLongitude]);
