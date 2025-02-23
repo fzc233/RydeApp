@@ -1,4 +1,4 @@
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, Alert } from "react-native";
 import RideLayout from "@/components/RideLayout";
 import DriverCard from "@/components/DriverCard";
 import CustomButton from "@/components/CustomButton";
@@ -7,6 +7,19 @@ import { useDriverStore } from "@/store";
 
 const ConfirmRide = () => {
   const { drivers, selectedDriver, setSelectedDriver } = useDriverStore();
+
+  const handleSelectRide = () => {
+    if (!selectedDriver) {
+      Alert.alert(
+        "Choose your driver",
+        "Please choose your driver to continue",
+        [{ text: "Confirm" }],
+      );
+      return;
+    }
+    router.push("/(root)/book-ride");
+  };
+
   return (
     <RideLayout title="Choose a Driver" snapPoints={["65%", "85%"]}>
       <FlatList
@@ -20,14 +33,12 @@ const ConfirmRide = () => {
         )}
         ListFooterComponent={() => (
           <View className="mx-5 mt-10">
-            <CustomButton
-              title="select Ride"
-              onPress={() => router.push("/(root)/book-ride")}
-            />
+            <CustomButton title="Select Ride" onPress={handleSelectRide} />
           </View>
         )}
       />
     </RideLayout>
   );
 };
+
 export default ConfirmRide;
