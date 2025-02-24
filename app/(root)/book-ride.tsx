@@ -1,26 +1,14 @@
 import { useUser } from "@clerk/clerk-expo";
+import { StripeProvider } from "@stripe/stripe-react-native";
 import { Image, Text, View } from "react-native";
 
+import Payment from "@/components/Payment";
 import RideLayout from "@/components/RideLayout";
 import { icons } from "@/constants";
 import { formatTime } from "@/lib/utils";
 import { useDriverStore, useLocationStore } from "@/store";
-import { StripeProvider } from "@stripe/stripe-react-native";
-import Payment from "@/components/Payment";
-import { useEffect, useState } from "react";
 
 const BookRide = () => {
-  const [publishableKey, setPublishableKey] = useState("");
-
-  const fetchPublishableKey = async () => {
-    const key = await fetchKey(); // fetch key from your server here
-    setPublishableKey(key);
-  };
-
-  useEffect(() => {
-    fetchPublishableKey();
-  }, []);
-
   const { user } = useUser();
   const { userAddress, destinationAddress } = useLocationStore();
   const { drivers, selectedDriver } = useDriverStore();
@@ -32,8 +20,8 @@ const BookRide = () => {
   return (
     <StripeProvider
       publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY!}
-      merchantIdentifier="merchant.uber.com" // required for Apple Pay
-      urlScheme="myapp" // required for 3D Secure and bank redirects
+      merchantIdentifier="merchant.com.uber"
+      urlScheme="myapp"
     >
       <RideLayout title="Book Ride">
         <>
@@ -76,7 +64,7 @@ const BookRide = () => {
             <View className="flex flex-row items-center justify-between w-full border-b border-white py-3">
               <Text className="text-lg font-JakartaRegular">Pickup Time</Text>
               <Text className="text-lg font-JakartaRegular">
-                {formatTime(parseInt(`${driverDetails.time}`))}
+                {formatTime(driverDetails?.time!)}
               </Text>
             </View>
 
@@ -103,11 +91,12 @@ const BookRide = () => {
               </Text>
             </View>
           </View>
+
           <Payment
             fullName={user?.fullName!}
             email={user?.emailAddresses[0].emailAddress!}
             amount={driverDetails?.price!}
-            driverId={driverDetails?.id!}
+            driverId={driverDetails?.id}
             rideTime={driverDetails?.time!}
           />
         </>

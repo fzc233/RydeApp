@@ -1,6 +1,6 @@
 import { Driver, MarkerData } from "@/types/type";
 
-const directionsAPI = process.env.EXPO_PUBLIC_DIRECTIONS_API_KEY;
+const directionsAPI = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
 
 export const generateMarkersFromData = ({
   data,
@@ -10,7 +10,18 @@ export const generateMarkersFromData = ({
   data: Driver[];
   userLatitude: number;
   userLongitude: number;
-}): MarkerData[] => {
+}): {
+  car_image_url: string;
+  driver_id: number;
+  latitude: number;
+  rating: number;
+  last_name: string;
+  profile_image_url: string;
+  title: string;
+  car_seats: number;
+  first_name: string;
+  longitude: number;
+}[] => {
   return data.map((driver) => {
     const latOffset = (Math.random() - 0.5) * 0.01; // Random offset between -0.005 and 0.005
     const lngOffset = (Math.random() - 0.5) * 0.01; // Random offset between -0.005 and 0.005
@@ -99,17 +110,45 @@ export const calculateDriverTimes = async ({
         `https://maps.googleapis.com/maps/api/directions/json?origin=${marker.latitude},${marker.longitude}&destination=${userLatitude},${userLongitude}&key=${directionsAPI}`,
       );
       const dataToUser = await responseToUser.json();
-      const timeToUser = dataToUser.routes[0].legs[0].duration.value; // Time in seconds
+
+      // ✅ 先检查 API 响应是否正确
+      if (!dataToUser.routes || dataToUser.routes.length === 0) {
+        console.warn(
+          `No routes found from driver (${marker.latitude}, ${marker.longitude}) to user.`,
+        );
+        return { ...marker, time: null, price: null }; // 处理无效情况
+      }
+
+      const timeToUser = dataToUser.routes[0].legs?.[0]?.duration?.value; // Time in seconds
+      if (!timeToUser) {
+        console.warn(
+          `Invalid time data from driver (${marker.latitude}, ${marker.longitude}) to user.`,
+        );
+        return { ...marker, time: null, price: null };
+      }
 
       const responseToDestination = await fetch(
         `https://maps.googleapis.com/maps/api/directions/json?origin=${userLatitude},${userLongitude}&destination=${destinationLatitude},${destinationLongitude}&key=${directionsAPI}`,
       );
       const dataToDestination = await responseToDestination.json();
+      console.log("dataToUser:", dataToUser);
+      console.log("dataToDestination:", dataToDestination);
+
+      // ✅ 再检查 API 响应是否正确
+      if (!dataToDestination.routes || dataToDestination.routes.length === 0) {
+        console.warn(`No routes found from user to destination.`);
+        return { ...marker, time: null, price: null };
+      }
+
       const timeToDestination =
-        dataToDestination.routes[0].legs[0].duration.value; // Time in seconds
+        dataToDestination.routes[0].legs?.[0]?.duration?.value; // Time in seconds
+      if (!timeToDestination) {
+        console.warn(`Invalid time data from user to destination.`);
+        return { ...marker, time: null, price: null };
+      }
 
       const totalTime = (timeToUser + timeToDestination) / 60; // Total time in minutes
-      const price = (totalTime * 0.5).toFixed(2); // Calculate price based on time
+      const price = (totalTime * 0.5).toFixed(2); // 计算价格
 
       return { ...marker, time: totalTime, price };
     });

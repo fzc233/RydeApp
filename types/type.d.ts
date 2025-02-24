@@ -13,7 +13,7 @@ declare interface Driver {
 declare interface MarkerData {
   latitude: number;
   longitude: number;
-  id: number;
+  id?: number;
   title: string;
   profile_image_url: string;
   car_image_url: string;
@@ -118,8 +118,8 @@ declare interface LocationStore {
     longitude,
     address,
   }: {
-    latitude: number;
-    longitude: number;
+    latitude: number | null;
+    longitude: number | null;
     address: string;
   }) => void;
 }

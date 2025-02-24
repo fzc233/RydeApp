@@ -5,22 +5,27 @@ import { Alert, Image, Text, View } from "react-native";
 import CustomButton from "@/components/CustomButton";
 import { icons } from "@/constants";
 import { googleOAuth } from "@/lib/auth";
-import { useCallback } from "react";
 
 const OAuth = () => {
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
 
-  const handleGoogleSignIn = useCallback(async () => {
-    try {
-      const result = await googleOAuth(startOAuthFlow);
-      console.log({ result });
-      if (result.code === "session_exists" || result.code === "success") {
-        router.push("/(root)/(tabs)/home");
-      }
-    } catch (err) {
-      console.error("OAuth error", err);
+  const handleGoogleSignIn = async () => {
+    console.log("Starting Google OAuth...");
+
+    const result = await googleOAuth(startOAuthFlow);
+    console.log("Google OAuth Result:", result); // 🔥 重要：检查返回值
+
+    if (result.success) {
+      Alert.alert("Success", "Redirecting to home screen.");
+
+      setTimeout(() => {
+        console.log("Navigating to Home...");
+        router.replace("/(root)/(tabs)/home");
+      }, 1000);
+    } else {
+      Alert.alert("Error", result.message);
     }
-  }, []);
+  };
 
   return (
     <View>
