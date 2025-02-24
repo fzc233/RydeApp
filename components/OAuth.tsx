@@ -10,14 +10,21 @@ const OAuth = () => {
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
 
   const handleGoogleSignIn = async () => {
+    console.log("Starting Google OAuth...");
+
     const result = await googleOAuth(startOAuthFlow);
+    console.log("Google OAuth Result:", result); // 🔥 重要：检查返回值
 
-    if (result.code === "session_exists") {
-      Alert.alert("Success", "Session exists. Redirecting to home screen.");
-      router.replace("/(root)/(tabs)/home");
+    if (result.success) {
+      Alert.alert("Success", "Redirecting to home screen.");
+
+      setTimeout(() => {
+        console.log("Navigating to Home...");
+        router.replace("/(root)/(tabs)/home");
+      }, 1000);
+    } else {
+      Alert.alert("Error", result.message);
     }
-
-    Alert.alert(result.success ? "Success" : "Error", result.message);
   };
 
   return (

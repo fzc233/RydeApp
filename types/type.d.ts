@@ -118,8 +118,8 @@ declare interface LocationStore {
     longitude,
     address,
   }: {
-    latitude: number;
-    longitude: number;
+    latitude: number | null;
+    longitude: number | null;
     address: string;
   }) => void;
 }

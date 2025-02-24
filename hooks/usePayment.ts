@@ -71,7 +71,7 @@ const usePayment = ({
       intentConfiguration: {
         mode: {
           amount: parseInt(amount) * 100,
-          currencyCode: "usd",
+          currencyCode: "aud",
         },
         confirmHandler: async (
           paymentMethod,
@@ -79,7 +79,6 @@ const usePayment = ({
           intentCreationCallback,
         ) => {
           try {
-            // 1️⃣ 创建支付意图
             const { paymentIntent, customer } = await createPaymentIntent(
               fullName,
               email,
@@ -88,7 +87,6 @@ const usePayment = ({
             );
 
             if (paymentIntent.client_secret) {
-              // 2️⃣ 处理支付
               const { result } = await processPayment(
                 paymentMethod.id,
                 paymentIntent.id,
@@ -97,7 +95,6 @@ const usePayment = ({
               );
 
               if (result.client_secret) {
-                // 3️⃣ 创建行程记录
                 await createRideBooking(
                   userAddress!,
                   destinationAddress!,

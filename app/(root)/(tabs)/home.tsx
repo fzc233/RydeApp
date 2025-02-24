@@ -10,6 +10,7 @@ import {
   Image,
   FlatList,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -27,9 +28,29 @@ const Home = () => {
 
   const { setUserLocation, setDestinationLocation } = useLocationStore();
 
+  // 🚀 这里的 useEffect 用于在进入 Home 页面时清空目的地信息
+  useEffect(() => {
+    setDestinationLocation({
+      latitude: null,
+      longitude: null,
+      address: "",
+    });
+  }, []);
+
   const handleSignOut = () => {
-    signOut();
-    router.replace("/(auth)/sign-in");
+    Alert.alert("Sign Out", "Do you want to sign out?", [
+      {
+        text: "No",
+        style: "cancel", // iOS 上会加粗，表示默认取消
+      },
+      {
+        text: "Yes",
+        onPress: () => {
+          signOut();
+          router.replace("/(auth)/sign-in");
+        },
+      },
+    ]);
   };
 
   const [hasPermission, setHasPermission] = useState<boolean>(false);

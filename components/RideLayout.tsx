@@ -6,6 +6,7 @@ import { router } from "expo-router";
 import React, { useRef } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useLocationStore } from "@/store"; // ✅ 这里 import 正确
 
 import Map from "@/components/Map";
 import { icons } from "@/constants";
@@ -21,12 +22,25 @@ const RideLayout = ({
 }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
 
+  // ✅ 把 useLocationStore() 放到组件内部
+  const { setDestinationLocation } = useLocationStore();
+
   return (
     <GestureHandlerRootView className="flex-1">
       <View className="flex-1 bg-white">
         <View className="flex flex-col h-screen bg-blue-500">
           <View className="flex flex-row absolute z-10 top-16 items-center justify-start px-5">
-            <TouchableOpacity onPress={() => router.back()}>
+            <TouchableOpacity
+              onPress={() => {
+                // 🚀 点击返回按钮时，清空 destinationLocation
+                setDestinationLocation({
+                  latitude: null,
+                  longitude: null,
+                  address: "",
+                });
+                router.back();
+              }}
+            >
               <View className="w-10 h-10 bg-white rounded-full items-center justify-center">
                 <Image
                   source={icons.backArrow}
