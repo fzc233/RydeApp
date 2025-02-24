@@ -99,14 +99,16 @@ const Map = () => {
     >
       {markers.map((marker, index) => (
         <Marker
-          key={marker.id}
+          key={marker.id ?? index}
           coordinate={{
             latitude: marker.latitude,
             longitude: marker.longitude,
           }}
           title={marker.title}
           image={
-            selectedDriver === +marker.id ? icons.selectedMarker : icons.marker
+            selectedDriver === +(marker.id ?? 0)
+              ? icons.selectedMarker
+              : icons.marker
           }
         />
       ))}
