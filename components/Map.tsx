@@ -1,150 +1,94 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import MapView, { Marker, PROVIDER_DEFAULT } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
-
 import { icons } from "@/constants";
-import { useFetch } from "@/lib/fetch";
-import {
-  calculateDriverTimes,
-  calculateRegion,
-  generateMarkersFromData,
-} from "@/lib/map";
-import { useDriverStore, useLocationStore } from "@/store";
-import { Driver, MarkerData } from "@/types/type";
+import { useDriverData } from "@/hooks/useDriverData";
 
 const directionsAPI = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
 
-const Map = () => {
-  const {
-    userLongitude,
-    userLatitude,
-    destinationLatitude,
-    destinationLongitude,
-  } = useLocationStore();
-  const { selectedDriver, setDrivers } = useDriverStore();
+type MapProps = {
+  destinationLatitude: number | null;
+  destinationLongitude: number | null;
+  selectedDriver: number;
+};
 
-  const { data: drivers, loading, error } = useFetch<Driver[]>("/(api)/driver");
-  const [markers, setMarkers] = useState<MarkerData[]>([]);
+const Map = ({ destinationLatitude, destinationLongitude, selectedDriver }: MapProps) => {
+  const { markers, region, loading, error } = useDriverData(destinationLatitude, destinationLongitude);
 
-  useEffect(() => {
-    if (Array.isArray(drivers)) {
-      if (!userLatitude || !userLongitude) return;
-
-      const newMarkers = generateMarkersFromData({
-        data: drivers,
-        userLatitude,
-        userLongitude,
-      });
-
-      setMarkers(newMarkers);
-    }
-  }, [drivers, userLatitude, userLongitude]);
-
-  useEffect(() => {
-    if (
-      markers.length > 0 &&
-      destinationLatitude !== undefined &&
-      destinationLongitude !== undefined
-    ) {
-      calculateDriverTimes({
-        markers,
-        userLatitude,
-        userLongitude,
-        destinationLatitude,
-        destinationLongitude,
-      }).then((drivers) => {
-        if (drivers) {
-          const formattedDrivers = drivers.map((driver) => ({
-            ...driver,
-            time: driver.time ? Math.round(driver.time) : 0, // 取整
-          }));
-          setDrivers(formattedDrivers as MarkerData[]);
-        }
-      });
-    }
-  }, [markers, destinationLatitude, destinationLongitude]);
-
-  const region = calculateRegion({
-    userLatitude,
-    userLongitude,
-    destinationLatitude,
-    destinationLongitude,
-  });
-
-  if (loading || (!userLatitude && !userLongitude))
+  if (loading) {
     return (
-      <View className="flex justify-between items-center w-full">
-        <ActivityIndicator size="small" color="#000" />
-      </View>
+        <View className="flex justify-between items-center w-full">
+          <ActivityIndicator size="small" color="#000" />
+        </View>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
-      <View className="flex justify-between items-center w-full">
-        <Text>Error: {error}</Text>
-      </View>
+        <View className="flex justify-between items-center w-full">
+          <Text>Error: {error}</Text>
+        </View>
     );
+  }
 
   return (
-    <MapView
-      provider={PROVIDER_DEFAULT}
-      className="w-full h-full rounded-2xl"
-      tintColor="black"
-      mapType="mutedStandard"
-      showsPointsOfInterest={false}
-      initialRegion={region}
-      showsUserLocation={true}
-      userInterfaceStyle="light"
-    >
-      {markers.map((marker, index) => (
-        <Marker
-          key={marker.id ?? index}
-          coordinate={{
-            latitude: marker.latitude,
-            longitude: marker.longitude,
-          }}
-          title={marker.title}
-          image={
-            selectedDriver === +(marker.id ?? 0)
-              ? icons.selectedMarker
-              : icons.marker
-          }
-        />
-      ))}
-
-      {destinationLatitude !== null &&
-        destinationLongitude !== null &&
-        destinationLatitude !== undefined &&
-        destinationLongitude !== undefined &&
-        !isNaN(destinationLatitude) &&
-        !isNaN(destinationLongitude) && (
-          <>
+      <MapView
+          provider={PROVIDER_DEFAULT}
+          className="w-full h-full rounded-2xl"
+          tintColor="black"
+          mapType="mutedStandard"
+          showsPointsOfInterest={false}
+          initialRegion={region}
+          showsUserLocation={true}
+          userInterfaceStyle="light"
+      >
+        {markers.map((marker, index) => (
             <Marker
-              key="destination"
-              coordinate={{
-                latitude: destinationLatitude,
-                longitude: destinationLongitude,
-              }}
-              title="Destination"
-              image={icons.pin}
+                key={marker.id ?? index}
+                coordinate={{
+                  latitude: marker.latitude,
+                  longitude: marker.longitude,
+                }}
+                title={marker.title}
+                image={
+                  selectedDriver === +(marker.id ?? 0)
+                      ? icons.selectedMarker
+                      : icons.marker
+                }
             />
-            <MapViewDirections
-              origin={{
-                latitude: userLatitude!,
-                longitude: userLongitude!,
-              }}
-              destination={{
-                latitude: destinationLatitude,
-                longitude: destinationLongitude,
-              }}
-              apikey={directionsAPI!}
-              strokeColor="#0286FF"
-              strokeWidth={2}
-            />
-          </>
-        )}
-    </MapView>
+        ))}
+
+        {destinationLatitude !== null &&
+            destinationLongitude !== null &&
+            !isNaN(destinationLatitude) &&
+            !isNaN(destinationLongitude) && (
+                <>
+                  <Marker
+                      key="destination"
+                      coordinate={{
+                        latitude: destinationLatitude,
+                        longitude: destinationLongitude,
+                      }}
+                      title="Destination"
+                      image={icons.pin}
+                  />
+                  <MapViewDirections
+                      origin={{
+                        latitude: region.latitude,
+                        longitude: region.longitude,
+                      }}
+                      destination={{
+                        latitude: destinationLatitude,
+                        longitude: destinationLongitude,
+                      }}
+                      apikey={directionsAPI!}
+                      strokeColor="#0286FF"
+                      strokeWidth={2}
+                  />
+                </>
+            )}
+      </MapView>
   );
 };
 
